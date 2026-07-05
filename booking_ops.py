@@ -3,9 +3,6 @@ import sqlite3
 import string
 import data
 
-WINDOW_COLUMNS = {"A", "F"}
-AISLE_COLUMNS = {"C", "D"}
-
 REFERENCE_ALPHABET = string.ascii_uppercase + string.digits
 REFERENCE_LENGTH = 8
 
@@ -127,28 +124,3 @@ def status(seats):
     storage_count = sum(1 for v in seats.values() if v == "S")
     booked_count = sum(1 for v in seats.values() if is_booked(v))
     print(f"\nSummary: {free_count} free | {booked_count} booked | {storage_count} storage\n")
-
-
-def find_by_preference(seats):
-    """Find free seats by preference: window, aisle, or any."""
-    print("\nPreference options: window / aisle / any")
-    pref = input("Enter preference: ").strip().lower()
-    if pref not in {"window", "aisle", "any"}:
-        print("Please enter 'window', 'aisle', or 'any'.")
-        return
-    matches = []
-    for seat_id, s in seats.items():
-        if s != "F":
-            continue
-        col = seat_id[-1]
-        if pref == "window" and col in WINDOW_COLUMNS:
-            matches.append(seat_id)
-        elif pref == "aisle" and col in AISLE_COLUMNS:
-            matches.append(seat_id)
-        elif pref == "any":
-            matches.append(seat_id)
-    matches = sorted(matches, key=lambda s: (int(s[:-1]), s[-1]))
-    if not matches:
-        print(f"No free seats found for '{pref}'.")
-        return
-    print(f"Found {len(matches)} free seat(s). Showing first 10: {matches[:10]}")
